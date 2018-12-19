@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.bjtu.ag</groupId>
 	<artifactId>ag-demo</artifactId>
@@ -39,5 +39,23 @@
 			<artifactId>commons-codec</artifactId>
 			<version>1.10</version>
 		</dependency>
+		<dependency>
+	    <groupId>org.apache.mahout</groupId>
+	    <artifactId>mahout-core</artifactId>
+	    <version>0.9</version>
+		</dependency>
+	
+		<dependency>
+	    <groupId>org.apache.mahout</groupId>
+	    <artifactId>mahout-integration</artifactId>
+	    <version>0.9</version>
+		</dependency>
+		
+		<dependency>
+    	<groupId>org.apache.mahout</groupId>
+    	<artifactId>mahout-examples</artifactId>
+    	<version>0.9</version>
+		</dependency>
+	<!-- https://mvnrepository.com/artifact/org.apache.mahout.commons/commons-cli -->
 	</dependencies>
 </project>
