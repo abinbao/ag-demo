@@ -2,11 +2,13 @@ package com.bjtu.app;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import com.bjtu.model.Point;
 import com.bjtu.model.Square;
 import com.bjtu.util.CalUtil;
 import com.bjtu.util.FileUtil;
+import com.bjtu.util.PropertiesUtil;
 import com.bjtu.util.SquareUtils;
 
 /**
@@ -16,11 +18,13 @@ import com.bjtu.util.SquareUtils;
  */
 public class CalPointForSquare {
 
+    private static Properties prop = PropertiesUtil.loadProps("/config.properties");
+
     public static void main(String[] args) {
         // 开始加载数据点
         ArrayList<Point> pointList = (ArrayList<Point>) FileUtil.loadata();
         // 开始划分网格
-        List<Square> squareList = SquareUtils.divideSquare(360, 360, 5);
+        List<Square> squareList = SquareUtils.divideSquare(10, 10, 5);
         // 开始统计每个网格中的数据点
         CalUtil.calPointNum(squareList, pointList);
         // 打印 划分好的网格中 count 大于 0 的区域
