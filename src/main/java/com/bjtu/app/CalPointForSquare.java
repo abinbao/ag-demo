@@ -31,7 +31,7 @@ public class CalPointForSquare {
         ArrayList<Point> pointList = (ArrayList<Point>) FileUtil.loadata();
         System.out.println("===== 点的个数 ======> " + pointList.size());
         // 开始划分网格 divideSquare 划分网格的方法，第一个参数是长，第二个参数是宽，第三个参数是划分单元格
-        List<Square> squareList = SquareUtils.divideSquare(360, 180, 5);
+        List<Square> squareList = SquareUtils.divideSquare(360, 180, 5, null);
         System.out.println("===== 区域长度 ======> " + squareList.size());
         // 开始统计每个网格中的数据点
         CalUtil.calPointNum(squareList, pointList);
