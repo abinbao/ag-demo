@@ -1,5 +1,6 @@
 package com.bjtu.main;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,10 +23,12 @@ import org.apache.mahout.math.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bjtu.graphics.GraphicsUtils;
 import com.bjtu.model.MergeSquare;
 import com.bjtu.model.Point;
 import com.bjtu.model.Square;
 import com.bjtu.util.CalUtil;
+import com.bjtu.util.ColorUtils;
 import com.bjtu.util.FileUtil;
 import com.bjtu.util.SquareUtils;
 
@@ -41,17 +44,22 @@ public class Main {
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
     private static CountDownLatch cdl = null;
 
+    private static double len = 160.0;
+    private static double height = 80.0;
+    private static double unit = 5;
+
     public static void main(String[] args) {
 
         // 1. 首先读取点的个数
         ArrayList<Point> pointList = (ArrayList<Point>) FileUtil.loadata();
-        logger.info("共读取：{} 个点", pointList.size());
+        logger.info(" === >>> 共读取：{} 个点", pointList.size());
         // 2. 划分区域
         Map<String, Square> squareMap = new HashMap<>();
-        List<Square> squareList = SquareUtils.divideSquare(16, 8, 5, squareMap);
-        logger.info("共划分区域：{} 个", squareList.size());
+        List<Square> squareList = SquareUtils.divideSquare(len, height, unit, squareMap);
+        logger.info(" === >>> 共划分区域：{} 个", squareList.size());
         // 3. 统计每个区域中点的个数
         CalUtil.calPointNum(squareList, pointList);
+        logger.info(" === >>> 区域统计结束 <<< === ");
         ArrayList<Integer> countList = new ArrayList<>(); // 统计点的集合
         // 打印 划分好的网格中 count 大于 0 的区域
         for (Square square : squareList) {
@@ -78,7 +86,7 @@ public class Main {
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
-        logger.info(" === >>> 区域 打标签完成...");
+        logger.info(" === >>> 区域 打标签完成 <<< === ");
         EXECUTOR_SERVICE.shutdown();
         // 6. 对区域进行遍历
         Set<Square> set = new HashSet<>(); // 判断该区域是否被合并
@@ -91,7 +99,6 @@ public class Main {
                 buildMergeSquare(square, mergeMap);
                 handleAdjoinSuqare(square, set, mergeMap, squareMap);
             } else {
-                logger.info("=== >>> 已有合并区域，开始判断当前区域 <<< ===");
                 if (set.contains(square)) {
                     logger.info("=== >>> 当前区域已被合并，开始判断其相邻区域 <<< ===");
                     handleAdjoinSuqare(square, set, mergeMap, squareMap);
@@ -104,7 +111,20 @@ public class Main {
             }
         }
         logger.info(" ===>>> 合并区域大小：{} <<< ===", mergeMap.size());
+        Map<String, Color> colorMap = new HashMap<>();
         for (Square square : squareList) {
+            if (colorMap.containsKey(square.getMergeId())) {
+                GraphicsUtils.me().paintComponents(colorMap.get(square.getMergeId()), (int) len / 2 * 10,
+                        20 + (int) height / 2 * 10, square.getX1().intValue(), square.getX2().intValue(),
+                        square.getY1().intValue(), square.getY2().intValue());
+            } else {
+                Color color = ColorUtils.randomColor();
+                colorMap.put(square.getMergeId(), color);
+                GraphicsUtils.me().paintComponents(color, (int) len / 2 * 10, 20 + (int) height / 2 * 10,
+                        square.getX1().intValue(), square.getX2().intValue(), square.getY1().intValue(),
+                        square.getY2().intValue());
+            }
+
             logger.info(square.toString() + " CanopyId:" + square.getCanopyId() + " mergeId:" + square.getMergeId());
         }
     }
@@ -120,19 +140,21 @@ public class Main {
             Map<String, Square> squareMap) {
         for (Square adjoin : square.getAdjoinList()) {
             String key = adjoin.getX1() + "_" + adjoin.getX2() + "_" + adjoin.getY1() + "_" + adjoin.getY2();
+            String skey = square.getX1() + "_" + square.getX2() + "_" + square.getY1() + "_" + square.getY2();
             if (set.contains(adjoin) && square.getCanopyId().equals(squareMap.get(key).getCanopyId())) {
+                logger.info(" === >>> 当前区域 key : {} square CanopyId:{} <<< === ", skey, square.getCanopyId());
+                logger.info(" === >>> 当前相邻区域 adjoin key : {} CanopyId:{} has been merged <<< === ", key,
+                        squareMap.get(key).getCanopyId());
                 square.setMergeId(squareMap.get(key).getMergeId());
             }
-
         }
         for (Square adjoin : square.getAdjoinList()) {
             String key = adjoin.getX1() + "_" + adjoin.getX2() + "_" + adjoin.getY1() + "_" + adjoin.getY2();
             String skey = square.getX1() + "_" + square.getX2() + "_" + square.getY1() + "_" + square.getY2();
             if (!set.contains(adjoin) && square.getCanopyId().equals(squareMap.get(key).getCanopyId())) {
-                logger.info("adjoin key : {}", key);
-                logger.info("square key : {}", skey);
-                logger.info("当前 square CanopyId:{}", square.getCanopyId());
-                logger.info("当前 adjoin CanopyId:{}", squareMap.get(key).getCanopyId());
+                logger.info("当前区域 key : {} square CanopyId:{} ", skey, square.getCanopyId());
+                logger.info("当前相邻区域 adjoin key : {} CanopyId:{} will be merged <<< ===", key,
+                        squareMap.get(key).getCanopyId());
                 squareMap.get(key).setMergeId(square.getMergeId());
                 set.add(adjoin);
                 mergeMap.get(square.getMergeId()).getMergeSquare().add(adjoin);
