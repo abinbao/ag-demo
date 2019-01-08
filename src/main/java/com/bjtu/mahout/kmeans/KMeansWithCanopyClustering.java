@@ -9,8 +9,10 @@ import org.apache.hadoop.fs.Path;
 import org.apache.mahout.clustering.Cluster;
 import org.apache.mahout.clustering.canopy.CanopyDriver;
 import org.apache.mahout.clustering.kmeans.KMeansDriver;
+import org.apache.mahout.clustering.kmeans.Kluster;
 import org.apache.mahout.common.HadoopUtil;
 import org.apache.mahout.common.distance.CosineDistanceMeasure;
+import org.apache.mahout.math.DenseVector;
 import org.apache.mahout.math.Vector;
 
 import com.bjtu.mahout.canopy.RandomPointsUtil;
@@ -44,13 +46,17 @@ public class KMeansWithCanopyClustering {
 
         CanopyDriver.run(conf, samples, canopyCentroids, new CosineDistanceMeasure(), 0.7, 0.5, false, 0, false);
 
-        KMeansDriver.run(conf, new Path(vectorsFolder), new Path(canopyCentroids, "clusters-0-final"), clusterOutput,
-                0.01, 20, true, 0.0, false);
+        KMeansDriver.run(conf, samples, new Path(canopyCentroids, "clusters-0-final"), clusterOutput, 0.01, 20, true,
+                0.0, false);
 
         List<List<Cluster>> Clusters = ClusterHelper.readClusters(conf, clusterOutput);
         for (Cluster cluster : Clusters.get(Clusters.size() - 1)) {
-
-            System.out.println("Cluster id: " + cluster.getId() + " center: " + cluster.getCenter().asFormatString());
+            Vector item = new DenseVector(new double[] { 1.5, 2.5 });
+            System.out
+                    .println("=====>>>>>" + new Kluster(sampleData.get(0), cluster.getId(), new CosineDistanceMeasure())
+                            .calculateConvergence(0.01));
+            System.out.println("Cluster id: " + cluster.getId() + " center: " + cluster.getCenter().asFormatString()
+                    + "====>>>>" + cluster.getClass().getSimpleName());
         }
     }
 }
