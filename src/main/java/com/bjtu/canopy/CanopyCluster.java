@@ -104,6 +104,7 @@ public class CanopyCluster {
                 // 如果到所有canopy的距离都大于T1,生成新的canopy
                 if (index == canopies.size()) {
                     Canopy newCanopy = new Canopy();
+                    newCanopy.setCanopyId((long) index);
                     newCanopy.setCenter(current);
                     newCanopy.getPoints().add(current);
                     canopies.add(newCanopy);
@@ -159,6 +160,9 @@ public class CanopyCluster {
         CanopyCluster builder = new CanopyCluster();
         builder.runCluster();
         builder.getCanopies();
+        for (Canopy canopy : builder.getCanopies()) {
+            System.out.println(canopy.toString());
+        }
         System.out.println(builder.getCanopies().size());
         System.out.println(builder.canopyCovers(builder.getCanopies().get(0), new Point(8.1, 8.1)));
         System.out.println(builder.canopyCovers(builder.getCanopies().get(1), new Point(8.1, 8.1)));

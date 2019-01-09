@@ -80,4 +80,10 @@ public class Canopy {
         double z = getPoints().size();
         setCenter(new Point(x / z, y / z));
     }
+
+    @Override
+    public String toString() {
+        return "Canopy [canopyId=" + canopyId + ", center=" + center + ", points=" + points + "]";
+    }
+
 }
