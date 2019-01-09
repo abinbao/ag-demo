@@ -8,9 +8,10 @@ public class Main {
     public static void main(String[] args) {
         User user = new User();
         users = (ArrayList<float[]>) user.CreateUser();
+
         Canopy canopy = new Canopy(users);
         int m = canopy.cluster();
-        System.out.println(m);
+        // System.out.println(m);
         Kmeans cu = new Kmeans(users);
         cu.execute(m);
         // for (int j=0;j<user.k;j++){

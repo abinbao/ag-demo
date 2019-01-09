@@ -3,7 +3,7 @@ package com.bjtu.cluster;
 import java.util.ArrayList;
 
 /**
- * Created by dgf on 2016/5/31.
+ * Canopy 算法
  */
 public class Canopy {
 
@@ -21,8 +21,8 @@ public class Canopy {
     public Canopy() {
 
     }
-    // 进行聚类，按照Canopy算法进行计算，将所有点进行聚类
 
+    // 进行聚类，按照Canopy算法进行计算，将所有点进行聚类
     public int cluster() {
         T2 = getAverageDistance((ArrayList<float[]>) points);
         System.out.println(T2);
@@ -97,7 +97,6 @@ public class Canopy {
         int distanceNumber = pointSize * (pointSize + 1) / 2;
         double T2 = sum / distanceNumber / 32; // 平均距离的1/8
         return T2;
-
     }
 
     // 得到的中心点(各点相加求平均)

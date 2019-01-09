@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Created by dgf on 2016/5/31.
+ * Kmeans 算法
  */
 public class Kmeans {
     private int k;// 簇数目
