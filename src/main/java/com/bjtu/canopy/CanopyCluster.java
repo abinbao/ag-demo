@@ -21,10 +21,6 @@ public class CanopyCluster {
     private List<Canopy> canopies;
     private AbstractDistanceComputor distanceComputer;
 
-    public CanopyCluster() {
-        init();
-    }
-
     /**
      * 返回 Canopy 集合
      * 
@@ -34,6 +30,11 @@ public class CanopyCluster {
         return canopies;
     }
 
+    /**
+     * @param t1
+     * @param t2
+     * @param points
+     */
     public CanopyCluster(Double t1, Double t2, List<Point> points) {
         this(t1, t2, points, new EuclideanDistanceComputor());
     }
@@ -43,24 +44,11 @@ public class CanopyCluster {
         T2 = t2;
         this.points = points;
         this.distanceComputer = distanceComputer;
+        this.canopies = new ArrayList<>();
     }
 
     public CanopyCluster(List<Point> points) {
         this.points = points;
-    }
-
-    public void init() {
-        points = new ArrayList<Point>();
-        points.add(new Point(8.1, 8.1));
-        points.add(new Point(7.1, 7.1));
-        points.add(new Point(6.2, 6.2));
-        points.add(new Point(7.1, 7.1));
-        points.add(new Point(2.1, 2.1));
-        points.add(new Point(1.1, 1.1));
-        points.add(new Point(0.1, 0.1));
-        points.add(new Point(3.0, 3.0));
-        canopies = new ArrayList<Canopy>();
-        distanceComputer = new EuclideanDistanceComputor();
     }
 
     /**
@@ -68,8 +56,10 @@ public class CanopyCluster {
      */
     public void runCluster() {
         while (!points.isEmpty()) {
+            int length = points.size();
             Iterator<Point> iter = points.iterator();
             while (iter.hasNext()) {
+                length--;
                 Point current = iter.next();
                 System.out.println("Current Point : " + current.toString());
                 // 取第一个点作为初始的 Canopy
@@ -114,17 +104,20 @@ public class CanopyCluster {
                     iter.remove();
                 }
             }
+            if (length == 0) {
+                break;
+            }
         }
         // 重新计算中心点
         for (Canopy c : canopies) {
-            System.out.println("old center: " + c.getCenter());
             c.computeCenter();
-            System.out.println("new center: " + c.getCenter());
-            System.out.println("new center: " + c.getPoints());
         }
+
     }
 
     /**
+     * 判断 点是否属于该Canopy 默认使用欧式距离计算
+     * 
      * @param canopy
      * @param p
      * @return
@@ -134,6 +127,8 @@ public class CanopyCluster {
     }
 
     /**
+     * 判断 点是否属于该Canopy
+     * 
      * @param canopy
      * @param p
      * @param computor
@@ -144,6 +139,8 @@ public class CanopyCluster {
     }
 
     /**
+     * 判断 点是否属于该Canopy
+     * 
      * @param canopy
      * @param p
      * @param computor
@@ -154,18 +151,5 @@ public class CanopyCluster {
         Point center = canopy.getCenter();
         double distance = computor.computeDistance(p, center);
         return distance < T1;
-    }
-
-    public static void main(String[] args) {
-        CanopyCluster builder = new CanopyCluster();
-        builder.runCluster();
-        builder.getCanopies();
-        for (Canopy canopy : builder.getCanopies()) {
-            System.out.println(canopy.toString());
-        }
-        System.out.println(builder.getCanopies().size());
-        System.out.println(builder.canopyCovers(builder.getCanopies().get(0), new Point(8.1, 8.1)));
-        System.out.println(builder.canopyCovers(builder.getCanopies().get(1), new Point(8.1, 8.1)));
-
     }
 }

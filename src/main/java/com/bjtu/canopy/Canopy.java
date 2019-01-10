@@ -6,15 +6,15 @@ import java.util.List;
 import com.bjtu.model.Point;
 
 /**
- * Canopy
+ * Canopy 簇
  * 
  * @author apple
  */
 public class Canopy {
 
-    private Long canopyId;
+    private Long canopyId; // id
     private Point center; // 中心点
-    private List<Point> points;
+    private List<Point> points; // 中心点包含的点的集合
 
     public static CanopyBuilder aBuiler() {
         return new CanopyBuilder();
