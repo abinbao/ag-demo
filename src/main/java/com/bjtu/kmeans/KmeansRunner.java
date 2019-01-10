@@ -48,21 +48,20 @@ public class KmeansRunner {
     }
 
     public KmeansRunner() {
-        initPoints(); // 初始化测试点集合
-        initCenters(); // 选取k个中心点
-        computor = new EuclideanDistanceComputor();
-    }
-
-    public KmeansRunner(int k, int maxIter, List<Point> points) {
-        this.k = k;
-        this.maxIter = maxIter;
-        this.points = points;
-        // 初始化中心点
-        initCenters();
     }
 
     public KmeansRunner(int k, int maxIter, List<Point> points, List<Point> centers) {
         this(k, maxIter, points, centers, new EuclideanDistanceComputor());
+    }
+
+    /**
+     * @param k
+     * @param maxIter
+     * @param points
+     * @return
+     */
+    public static KmeansRunner createKmeansCluster(int k, int maxIter, List<Point> points, List<Point> centers) {
+        return new KmeansRunner(k, maxIter, points, centers);
     }
 
     public KmeansRunner(int k, int maxIter, List<Point> points, List<Point> centers,
@@ -72,42 +71,21 @@ public class KmeansRunner {
         this.points = points;
         this.centers = centers;
         this.computor = computor;
+        this.kmeansClusters = new ArrayList<>();
     }
 
     /**
-     * 默认测试节点
+     * 初始化簇
      */
-    private void initPoints() {
-        points = new ArrayList<Point>();
-        points.add(new Point(8.1, 8.1));
-        points.add(new Point(7.1, 7.1));
-        points.add(new Point(6.2, 6.2));
-        points.add(new Point(2.1, 2.1));
-        points.add(new Point(1.1, 1.1));
-        points.add(new Point(0.1, 0.1));
-        points.add(new Point(3.0, 3.0));
-        points.add(new Point(3.5, 3.9));
-        points.add(new Point(5.3, 5.9));
-        points.add(new Point(7.0, 3.0));
-        points.add(new Point(7.9, 3.0));
-
-    }
-
-    /*
-     * 初始化聚类中心 这里的选取策略是，从点集中按序列抽取K个作为初始聚类中心
-     */
-    public void initCenters() {
-        kmeansClusters = new ArrayList<>(k);
-        centers = new ArrayList<>(k);
-        for (int i = 0; i < k; i++) {
-            Point tmPoint = points.get(i * 2);
-            Point center = new Point(tmPoint.getX(), tmPoint.getY());
-            center.setClusterID(i + 1);
-            KmeansCluster kmeans = new KmeansCluster();
-            kmeans.setCenter(center);
-            kmeans.setClusterId(i + 1);
-            kmeans.getPoints().add(center);
-            kmeansClusters.add(kmeans);
+    public void initClusters() {
+        if (!centers.isEmpty()) {
+            for (int i = 0; i < centers.size(); ++i) {
+                KmeansCluster kmeans = new KmeansCluster();
+                kmeans.setCenter(centers.get(i));
+                kmeans.setClusterId(i + 1);
+                kmeans.getPoints().add(centers.get(i));
+                kmeansClusters.add(kmeans);
+            }
         }
     }
 
@@ -163,14 +141,5 @@ public class KmeansRunner {
         if (null != belong)
             belong.getPoints().add(point);
 
-    }
-
-    public static void main(String[] args) {
-        KmeansRunner kmeans = KmeansRunner.createKmeansCluster();
-        kmeans.runKmeansCluster();
-        List<KmeansCluster> clusters = kmeans.getClusters();
-        for (KmeansCluster cluster : clusters) {
-            System.out.println(cluster.toString());
-        }
     }
 }
