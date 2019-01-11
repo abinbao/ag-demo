@@ -13,15 +13,21 @@ public class CanopyWithKmeansCluster {
 
     public static void main(String[] args) {
         List<Point> points = new ArrayList<>();
+        List<Point> kpoints = new ArrayList<>();
         points.add(new Point(0.0, 2.1));
         points.add(new Point(0.0, 1.1));
         points.add(new Point(0.0, 9.0));
         points.add(new Point(0.0, 27.0));
         points.add(new Point(0.0, 33.0));
-        runCluster(points);
+        kpoints.add(new Point(0.0, 2.1));
+        kpoints.add(new Point(0.0, 1.1));
+        kpoints.add(new Point(0.0, 9.0));
+        kpoints.add(new Point(0.0, 27.0));
+        kpoints.add(new Point(0.0, 33.0));
+        runCluster(points, kpoints);
     }
 
-    public static void runCluster(List<Point> points) {
+    public static void runCluster(List<Point> points, List<Point> kpoints) {
         CanopyCluster builder = new CanopyCluster(8d, 4d, points);
         builder.runCluster();
         List<Canopy> canopies = builder.getCanopies();
@@ -31,7 +37,7 @@ public class CanopyWithKmeansCluster {
             System.out.println(canopy.toString());
         }
         // Kmeans 聚类
-        KmeansRunner kmeans = KmeansRunner.createKmeansCluster(centers.size(), 50, points, centers);
+        KmeansRunner kmeans = KmeansRunner.createKmeansCluster(centers.size(), 50, kpoints, centers);
         kmeans.initClusters();
         kmeans.runKmeansCluster();
         List<KmeansCluster> clusters = kmeans.getClusters();
