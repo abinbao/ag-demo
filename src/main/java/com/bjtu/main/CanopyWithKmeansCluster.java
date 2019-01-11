@@ -32,9 +32,13 @@ public class CanopyWithKmeansCluster {
         // 所以使用另一个 List 来保存测试结合防止印象接下来的运算
         List<Point> kpoints = new ArrayList<>();
         kpoints.addAll(points);
+        // 初始化 Canopy 参数
         CanopyCluster builder = new CanopyCluster(8d, 4d, points);
+        // 开始 Canopy 算法
         builder.runCluster();
+        // 获取 Canopy
         List<Canopy> canopies = builder.getCanopies();
+        // 遍历中心点
         List<Point> centers = new ArrayList<>();
         for (Canopy canopy : canopies) {
             centers.add(canopy.getCenter());
@@ -42,8 +46,11 @@ public class CanopyWithKmeansCluster {
         }
         // Kmeans 聚类
         KmeansRunner kmeans = KmeansRunner.createKmeansCluster(centers.size(), 50, kpoints, centers);
+        // 初始化 Kmeans 参数
         kmeans.initClusters();
+        // 开始聚类
         kmeans.runKmeansCluster();
+        // 获取 Kmeans 簇
         List<KmeansCluster> clusters = kmeans.getClusters();
         for (KmeansCluster cluster : clusters) {
             System.out.println(cluster.toString());
