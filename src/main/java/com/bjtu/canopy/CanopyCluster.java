@@ -17,9 +17,9 @@ public class CanopyCluster {
 
     private double T1 = 8d;
     private double T2 = 4d;
-    private List<Point> points;
-    private List<Canopy> canopies;
-    private AbstractDistanceComputor distanceComputer;
+    private List<Point> points; // 测试点集合
+    private List<Canopy> canopies; // Canopy 集合
+    private AbstractDistanceComputor distanceComputer; // 距离计算公式
 
     /**
      * 返回 Canopy 集合
@@ -31,6 +31,8 @@ public class CanopyCluster {
     }
 
     /**
+     * 构造函数 初始化 T1 T2 和 和测试点集合 ，默认使用欧式距离计算
+     * 
      * @param t1
      * @param t2
      * @param points
@@ -47,8 +49,11 @@ public class CanopyCluster {
         this.canopies = new ArrayList<>();
     }
 
+    /**
+     * @param points
+     */
     public CanopyCluster(List<Point> points) {
-        this.points = points;
+        new CanopyCluster(this.T1, this.T2, points);
     }
 
     /**
@@ -61,7 +66,7 @@ public class CanopyCluster {
             while (iter.hasNext()) {
                 length--;
                 Point current = iter.next();
-                System.out.println("Current Point : " + current.toString());
+                System.out.println("Canopy Current Point : " + current.toString());
                 // 取第一个点作为初始的 Canopy
                 if (canopies.isEmpty()) {
                     Canopy canopy = new Canopy();
