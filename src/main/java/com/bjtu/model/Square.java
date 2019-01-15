@@ -325,4 +325,14 @@ public class Square {
         Double tt = x1 + x2 + y1 + y2;
         return tt.hashCode();
     }
+
+    /**
+     * 区域面积
+     * 
+     * @return
+     */
+    public double getSquare() {
+
+        return ((y2 - y1) * (x2 - x1));
+    }
 }

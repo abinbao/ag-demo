@@ -153,4 +153,5 @@ public final class SquareUtils {
             return true;
         return false;
     }
+
 }

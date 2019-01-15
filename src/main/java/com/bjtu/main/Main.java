@@ -1,11 +1,11 @@
 package com.bjtu.main;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -18,13 +18,12 @@ import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bjtu.graphics.GraphicsUtils;
+import com.bjtu.config.Config;
 import com.bjtu.kmeans.KmeansCluster;
 import com.bjtu.model.MergeSquare;
 import com.bjtu.model.Point;
 import com.bjtu.model.Square;
 import com.bjtu.util.CalUtil;
-import com.bjtu.util.ColorUtils;
 import com.bjtu.util.FileUtil;
 import com.bjtu.util.SquareUtils;
 
@@ -65,7 +64,7 @@ public class Main {
             }
             countList.add((double) square.getCount()); // 向点的集合中添加点
         }
-        // 4. 使用 Cannopy 算法构建簇
+        // 4. 使用 Cannopy 算法 结合 Kmeans 算法构建簇
         // 4.1 生成点的向量
         List<Point> vectors = generateVector(countList);
         // 4.2 对点的向量进行聚类
@@ -107,22 +106,38 @@ public class Main {
             }
         }
         logger.info(" ===>>> 合并区域大小：{} <<< ===", mergeMap.size());
-        Map<String, Color> colorMap = new HashMap<>();
+        // =============开始计算===================
+        logger.info("==========>>>>>>>开始统计合并区域信息<<<<<<<<<=============");
+        Map<String, Double> mergequareMap = new HashMap<>(); // 保存每个合并区域的区域面积
+        Map<String, Integer> mergeSquarePointMap = new HashMap<>(); // 保存每个合并区域的点的总数
+        Map<String, Double> mergeSquareLapPointMap = new HashMap<>(); // 保存每个合并区域的噪声点的总数
+        Map<String, Double> querySquareMap = new HashMap<>(); // 合并后的区域在查询区域中的面积
         for (Square square : squareList) {
-            if (colorMap.containsKey(square.getMergeId())) {
-                GraphicsUtils.me().paintComponents(colorMap.get(square.getMergeId()), (int) len / 2 * 10,
-                        20 + (int) height / 2 * 10, square.getX1().intValue(), square.getX2().intValue(),
-                        square.getY1().intValue(), square.getY2().intValue());
+            CalUtil.searchLapalcePointNumByCluster(square, querySquareMap, Config.querySquare);
+            String mergeId = square.getMergeId();
+            if (!mergequareMap.containsKey(mergeId)) {
+                mergequareMap.put(mergeId, square.getSquare());
+                mergeSquarePointMap.put(mergeId, square.getCount());
+                mergeSquareLapPointMap.put(mergeId, square.getCountLa());
             } else {
-                Color color = ColorUtils.randomColor();
-                colorMap.put(square.getMergeId(), color);
-                GraphicsUtils.me().paintComponents(color, (int) len / 2 * 10, 20 + (int) height / 2 * 10,
-                        square.getX1().intValue(), square.getX2().intValue(), square.getY1().intValue(),
-                        square.getY2().intValue());
+                mergequareMap.put(mergeId, mergequareMap.get(mergeId) + square.getSquare());
+                mergeSquarePointMap.put(mergeId, mergeSquarePointMap.get(mergeId) + square.getCount());
+                mergeSquareLapPointMap.put(mergeId, mergeSquareLapPointMap.get(mergeId) + square.getCountLa());
             }
-
             logger.info(square.toString() + " CanopyId:" + square.getCanopyId() + " mergeId:" + square.getMergeId());
         }
+
+        // 最后开始计算
+        double result = 0d;
+        for (Entry<String, Double> entry : querySquareMap.entrySet()) {
+            String key = entry.getKey();
+            double rate = entry.getValue() / mergequareMap.get(key);
+            double count = mergeSquarePointMap.get(key) * rate
+                    + CalUtil.lapalceNoice(mergeSquarePointMap.get(key), 0.1);
+            result = result + count;
+        }
+
+        System.out.println(result);
     }
 
     /**

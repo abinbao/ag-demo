@@ -21,7 +21,7 @@ public class Config {
 
     public static int[] map = { 360, 150 };
 
-    public static Square querySquare = new Square(-102.0, -96.0, 28.0, 31.0);
+    public static Square querySquare = new Square(-102.0, 102.0, -160.0, 160.0);
 
     public static double e = 1;
 
