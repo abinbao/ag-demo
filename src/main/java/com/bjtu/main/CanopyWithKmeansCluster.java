@@ -23,11 +23,13 @@ public class CanopyWithKmeansCluster {
         points.add(new Point(0.0, 9.0));
         points.add(new Point(0.0, 27.0));
         points.add(new Point(0.0, 33.0));
-        runCluster(points);
+        Point p = new Point(0.0, 2.1);
+        System.out.println(points.contains(p));
+        // runCluster(points);
     }
 
     // 开始聚类
-    public static void runCluster(List<Point> points) {
+    public static List<KmeansCluster> runCluster(List<Point> points) {
         // 注意这里，由于List 是引用类型，传入 Canopy 算法时，Canopy 对 List 进行了删除操作，导致测试集合的测试点变少
         // 所以使用另一个 List 来保存测试结合防止印象接下来的运算
         List<Point> kpoints = new ArrayList<>();
@@ -55,5 +57,6 @@ public class CanopyWithKmeansCluster {
         for (KmeansCluster cluster : clusters) {
             System.out.println(cluster.toString());
         }
+        return clusters;
     }
 }

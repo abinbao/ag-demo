@@ -15,11 +15,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.apache.mahout.clustering.canopy.Canopy;
+import org.apache.mahout.clustering.canopy.CanopyClusterer;
+import org.apache.mahout.common.distance.EuclideanDistanceMeasure;
+import org.apache.mahout.math.DenseVector;
+import org.apache.mahout.math.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bjtu.graphics.GraphicsUtils;
-import com.bjtu.kmeans.KmeansCluster;
 import com.bjtu.model.MergeSquare;
 import com.bjtu.model.Point;
 import com.bjtu.model.Square;
@@ -34,9 +38,9 @@ import com.bjtu.util.SquareUtils;
  * @date 2018-12-31
  * @author apple
  */
-public class Main {
+public class Main2 {
 
-    private static Logger logger = LoggerFactory.getLogger(Main.class);
+    private static Logger logger = LoggerFactory.getLogger(Main2.class);
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
     private static CountDownLatch cdl = null;
 
@@ -56,25 +60,25 @@ public class Main {
         // 3. 统计每个区域中点的个数
         CalUtil.calPointNum(squareList, pointList);
         logger.info(" === >>> 区域统计结束 <<< === ");
-        ArrayList<Double> countList = new ArrayList<>(); // 统计点的集合
+        ArrayList<Integer> countList = new ArrayList<>(); // 统计点的集合
         // 打印 划分好的网格中 count 大于 0 的区域
         for (Square square : squareList) {
             if (square.getCount() > 0) {
                 logger.info("x1:" + square.getX1() + ", x2:" + square.getX2() + ", y1:" + square.getY1() + ", y2:"
                         + square.getY2() + ", count:" + square.getCount());
             }
-            countList.add((double) square.getCount()); // 向点的集合中添加点
+            countList.add(square.getCount()); // 向点的集合中添加点
         }
         // 4. 使用 Cannopy 算法构建簇
         // 4.1 生成点的向量
-        List<Point> vectors = generateVector(countList);
+        List<Vector> vectors = generateVector(countList);
         // 4.2 对点的向量进行聚类
-        List<KmeansCluster> clusters = CanopyWithKmeansCluster.runCluster(vectors);
+        List<Canopy> canopies = CanopyClusterer.createCanopies(vectors, new EuclideanDistanceMeasure(), 3.0, 1.5);
         // 5. 对区域进行打标签，判断集合属于哪个簇
         List<Future> futures = new ArrayList<>();
         cdl = new CountDownLatch(squareList.size());
         for (Square squ : squareList) {
-            futures.add(EXECUTOR_SERVICE.submit(new Task(squ, clusters)));
+            futures.add(EXECUTOR_SERVICE.submit(new Task(squ, canopies)));
         }
         // 插入数据完成后 执行修改操作
         try {
@@ -86,7 +90,7 @@ public class Main {
         EXECUTOR_SERVICE.shutdown();
         // 6. 对区域进行遍历
         Set<Square> set = new HashSet<>(); // 判断该区域是否被合并
-        Map<String, MergeSquare> mergeMap = new ConcurrentHashMap<>(clusters.size());
+        Map<String, MergeSquare> mergeMap = new ConcurrentHashMap<>(canopies.size());
         for (Square square : squareList) {
             logger.info("当前区域:{}", square.toString());
             if (mergeMap.isEmpty()) {
@@ -179,20 +183,20 @@ public class Main {
 
     private static class Task implements Callable<Boolean> {
         private Square square;
-        private List<KmeansCluster> clusters;
+        private List<Canopy> canopies;
 
-        public Task(Square squ, List<KmeansCluster> clusters) {
+        public Task(Square squ, List<Canopy> canopies) {
             this.square = squ;
-            this.clusters = clusters;
+            this.canopies = canopies;
         }
 
         @Override
         public Boolean call() throws Exception {
-            Point point = new Point(0d, (double) square.getCount());
-            for (KmeansCluster cluster : clusters) {
-                boolean flag = cluster.coverCluster(point);
+            for (Canopy canopy : canopies) {
+                boolean flag = new CanopyClusterer(new EuclideanDistanceMeasure(), 3.0, 1.5).canopyCovers(canopy,
+                        get((double) square.getCount()));
                 if (flag) {
-                    square.setCanopyId(String.valueOf(cluster.getClusterId()));
+                    square.setCanopyId(String.valueOf(canopy.getId()));
                 }
                 cdl.countDown();
             }
@@ -207,13 +211,21 @@ public class Main {
      * @param countList
      * @return
      */
-    public static List<Point> generateVector(List<Double> countList) {
-        List<Point> vectors = new ArrayList<>();
-        for (double count : countList) {
-            Point point = new Point(0d, count);
-            vectors.add(point);
+    public static List<Vector> generateVector(List<Integer> countList) {
+        List<Vector> vectors = new ArrayList<>();
+        for (int count : countList) {
+            vectors.add(get((double) count));
         }
         return vectors;
+    }
+
+    public static Vector get(Double count) {
+        DenseVector vector = null;
+        if (count == 0)
+            vector = new DenseVector(new double[] { 0d, 0d });
+        else
+            vector = new DenseVector(new double[] { 0d, (double) count });
+        return vector;
     }
 
     /**

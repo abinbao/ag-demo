@@ -46,4 +46,14 @@ public class KmeansCluster {
         return "Kmeans [ClusterId=" + clusterId + ", center=" + center + ", points=" + points + "]";
     }
 
+    /**
+     * 判断该簇是否包含这个点
+     * 
+     * @param point
+     * @return
+     */
+    public boolean coverCluster(Point point) {
+        return points.contains(point);
+    }
+
 }
