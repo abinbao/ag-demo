@@ -137,6 +137,7 @@ public class CalUtil {
             }
             // 加入拉普拉斯噪声
             if (square.getCount() != 0) {
+                logger.info("00000000000000000000000");
                 double countLap = lapalceNoice(square.getCount(), 0.1);
                 square.setCountLa(countLap);
             } else {

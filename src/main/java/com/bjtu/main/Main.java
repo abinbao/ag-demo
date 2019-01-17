@@ -39,9 +39,9 @@ public class Main {
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
     private static CountDownLatch cdl = null;
 
-    private static double len = 160.0;
-    private static double height = 80.0;
-    private static double unit = 5;
+    private static double len = 320.0;
+    private static double height = 160.0;
+    private static double unit = 1;
 
     public static void main(String[] args) {
 
@@ -131,13 +131,18 @@ public class Main {
         double result = 0d;
         for (Entry<String, Double> entry : querySquareMap.entrySet()) {
             String key = entry.getKey();
+            logger.info("=======>>>>>>>合并区域ID:" + key + " , 面积为：" + mergequareMap.get(key) + "<<<<<<=========");
             double rate = entry.getValue() / mergequareMap.get(key);
+            logger.info("=======>>>>>>>合并区域ID:" + key + " , 查询区域占比：" + rate + "<<<<<<=========");
+            logger.info("=======>>>>>>>合并区域ID:" + key + " , 点的个数为：" + mergeSquarePointMap.get(key) + "<<<<<<=========");
             double count = mergeSquarePointMap.get(key) * rate
                     + CalUtil.lapalceNoice(mergeSquarePointMap.get(key), 0.1);
             result = result + count;
         }
+        int agActNum = CalUtil.searchActualPointNum(Config.querySquare, pointList);
+        logger.info("=====>>>>>实际查询点的个数：" + agActNum + " <<<<<<=======");
+        logger.info("=====>>>>>本算法查询点的个数：" + result + " <<<<<<=======");
 
-        System.out.println(result);
     }
 
     /**

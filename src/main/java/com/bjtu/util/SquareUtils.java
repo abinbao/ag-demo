@@ -35,13 +35,13 @@ public final class SquareUtils {
         double yStart = -(yLength / 2);
         double yEnd = (yLength / 2);
         for (double x = xStart; x < xEnd; x = x + unit) {
-            double x2 = x + 5;
-            if (x + 5 > xEnd) {
+            double x2 = x + unit;
+            if (x + unit > xEnd) {
                 x2 = xEnd;
             }
-            for (double y = yStart; y < yEnd; y = y + 5) {
-                double y2 = y + 5;
-                if (y + 5 > yEnd) {
+            for (double y = yStart; y < yEnd; y = y + unit) {
+                double y2 = y + unit;
+                if (y + unit > yEnd) {
                     y2 = yEnd;
                 }
                 Square square = new Square(x, x2, y, y2);
@@ -94,20 +94,20 @@ public final class SquareUtils {
             list.add(item);
         }
         // 右边的区域
-        if (x2 + 5 >= xEnd && xEnd != x2) {
+        if (x2 + unit >= xEnd && xEnd != x2) {
             Square item = new Square(x2, xEnd, y1, y2);
             list.add(item);
         }
-        if (x2 + 5 < xEnd) {
-            Square item = new Square(x2, x2 + 5, y1, y2);
+        if (x2 + unit < xEnd) {
+            Square item = new Square(x2, x2 + unit, y1, y2);
             list.add(item);
         }
         // 左边的区域
-        if (x1 - 5 > xStart) {
-            Square item = new Square(x1 - 5, x1, y1, y2);
+        if (x1 - unit > xStart) {
+            Square item = new Square(x1 - unit, x1, y1, y2);
             list.add(item);
         }
-        if (x1 - 5 <= xStart && x1 != xStart) {
+        if (x1 - unit <= xStart && x1 != xStart) {
             Square item = new Square(xStart, x1, y1, y2);
             list.add(item);
         }
