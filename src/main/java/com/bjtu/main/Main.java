@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -23,8 +24,10 @@ import com.bjtu.kmeans.KmeansCluster;
 import com.bjtu.model.MergeSquare;
 import com.bjtu.model.Point;
 import com.bjtu.model.Square;
+import com.bjtu.pipeline.StationInfoDao;
 import com.bjtu.util.CalUtil;
 import com.bjtu.util.FileUtil;
+import com.bjtu.util.PropertiesUtil;
 import com.bjtu.util.SquareUtils;
 
 /**
@@ -38,6 +41,7 @@ public class Main {
     private static Logger logger = LoggerFactory.getLogger(Main.class);
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
     private static CountDownLatch cdl = null;
+    private static Properties prop = PropertiesUtil.loadProps("/config.properties");
 
     private static double len = 320.0;
     private static double height = 160.0;
@@ -45,9 +49,20 @@ public class Main {
 
     public static void main(String[] args) {
 
+        /*
+         * 数据处理层： 1. 数据格式化处理 2. 数据归一化 3. 数据格式转换
+         */
         // 1. 首先读取点的个数
-        ArrayList<Point> pointList = (ArrayList<Point>) FileUtil.loadata();
+
+        List<Point> pointList = null;
+        if (Boolean.parseBoolean(prop.getProperty("chekin.enabled")))
+            pointList = FileUtil.loadata();
+        else
+            pointList = StationInfoDao.getPoints();
         logger.info(" === >>> 共读取：{} 个点", pointList.size());
+        /*
+         * 函数逻辑处理层：1. 区域划分 2. 区域数据点集合统计 3.
+         */
         // 2. 划分区域
         Map<String, Square> squareMap = new HashMap<>();
         List<Square> squareList = SquareUtils.divideSquare(len, height, unit, squareMap);
