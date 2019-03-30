@@ -27,13 +27,15 @@ public class SumSquareOfNull {
     private static Logger logger = LoggerFactory.getLogger(SumSquareOfNull.class);
     private static Properties prop = PropertiesUtil.loadProps("/config.properties");
 
-    private static double len = 320.0;
-    private static double height = 160.0;
-    private static double unit = 1;
+    private static double len = 320.0; // 查询区域宽度
+    private static double height = 160.0; // 查询区域高度
+    private static double unit = 1; // 划分区域单元格
 
     public static void main(String[] args) {
         // 1. 首先读取点的个数
         List<Point> pointList = null;
+        // 根据 chekin.enable 参数判断需要读取那个数据集
+        // 数据集包含 chekin 数据集， station 数据集， 参数为 true 时，读取 chekin 数据集
         if (Boolean.parseBoolean(prop.getProperty("chekin.enabled")))
             pointList = FileUtil.loadata();
         else
@@ -48,10 +50,11 @@ public class SumSquareOfNull {
         logger.info(" === >>> 区域统计结束 <<< === ");
         ArrayList<Double> countList = new ArrayList<>(); // 统计点的集合
         // 打印 划分好的网格中 count 大于 0 的区域
-        int count = 0;
-        int index = 0;
-        int max = 0;
-        int min = 0;
+
+        int count = 0; // 统计不包含点的区域个数
+        int index = 0; // 统计包含点的区域个数
+        int max = 0; // 统计包含点区域的点个数的最大值
+        int min = 0; // 统计包含区域的点个数的最小值
         for (Square square : squareList) {
             if (square.getCount() >= max) {
                 max = square.getCount();
