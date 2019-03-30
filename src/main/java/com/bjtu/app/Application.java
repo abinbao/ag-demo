@@ -26,9 +26,15 @@ public class Application {
         logger.info("=== 开始计算 ===");
         logger.info("[ 查询区域范围：x1=" + Config.querySquare.getX1() + ", x2=" + Config.querySquare.getX2() + ", y1="
                 + Config.querySquare.getY1() + ", y2=" + Config.querySquare.getY2() + " ]");
+        /*
+         * 数据处理层
+         */
         // 加载数据
         ArrayList<Point> pointList = (ArrayList<Point>) FileUtil.loadata();
 
+        /*
+         * 底层函数实现
+         */
         // 第一次划分网格数
         int m1 = CalUtil.calGridNum(Config.readNum, 0.1, 10);
         logger.info("第一次划分网格数为：" + m1 * m1);
@@ -90,10 +96,10 @@ public class Application {
         for (Square square : squareList) {
             if (square.getCount() != 0) {
                 if (square.isFlag()) {
-                    CalUtil.searchLapalcePointNum(square.getSquare_D1(), agCubeLapNum, Config.querySquare);
-                    CalUtil.searchLapalcePointNum(square.getSquare_D2(), agCubeLapNum, Config.querySquare);
+                    CalUtil.searchLapalcePointNumV2(square.getSquare_D1(), agCubeLapNum, Config.querySquare);
+                    CalUtil.searchLapalcePointNumV2(square.getSquare_D2(), agCubeLapNum, Config.querySquare);
                 } else {
-                    CalUtil.searchLapalcePointNum(square, agCubeLapNum, Config.querySquare);
+                    CalUtil.searchLapalcePointNumV2(square, agCubeLapNum, Config.querySquare);
 
                     // if(!square.getSquareList().isEmpty()) {
                     // for(Square item : square.getSquareList()) {
@@ -106,10 +112,10 @@ public class Application {
                     // }
                 }
             } else {
-                CalUtil.searchLapalcePointNum(square, agCubeLapNum, Config.querySquare);
+                CalUtil.searchLapalcePointNumV2(square, agCubeLapNum, Config.querySquare);
             }
         }
-        logger.info("AG === 实际查询点的个数为 === " + agActNum);
+        logger.info(" === 实际查询点的个数为 === " + agActNum);
         logger.info("AG === 加入拉普拉斯噪声查询点的个数为 === " + agLapNum.get("agNum") + ", 共查询区域：" + agLapNum.get("squareNum"));
         logger.info("AG CUBE === 加入拉普拉斯噪声查询点的个数为 === " + agCubeLapNum.get("agNum") + ", 共查询区域："
                 + agLapNum.get("squareNum"));

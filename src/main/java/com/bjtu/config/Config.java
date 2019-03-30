@@ -15,15 +15,15 @@ public class Config {
 
     // public static String DATA_PATH = "D:/python/code/xiaobin/simple.txt";
 
-    public static int readNum = 1000; // 读取数据
+    public static int readNum = 100000; // 读取数据
 
     public static int startNum = 0; // 开始读的行数
 
     public static int[] map = { 360, 150 };
 
-    public static Square querySquare = new Square(-320.0, 320.0, -160.0, 160.0);
+    public static Square querySquare = new Square(-120.0, -90.0, 20.0, 100.0);
 
-    public static double e = 1;
+    public static double e = 0.7;
 
     /**
      * 格式化小数 保留两位

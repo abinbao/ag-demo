@@ -137,7 +137,6 @@ public class CalUtil {
             }
             // 加入拉普拉斯噪声
             if (square.getCount() != 0) {
-                logger.info("00000000000000000000000");
                 double countLap = lapalceNoice(square.getCount(), 0.1);
                 square.setCountLa(countLap);
             } else {
@@ -285,6 +284,114 @@ public class CalUtil {
             // }
             searchLapalcePointNum(square.getSquare_D1(), Agcount, Config.querySquare);
             searchLapalcePointNum(square.getSquare_D2(), Agcount, Config.querySquare);
+        }
+    }
+
+    /**
+     * @param square
+     *            统计区域
+     * @param Agcount
+     *            加入拉普拉斯的噪声
+     * @param query
+     *            查询区域
+     */
+    public static void searchLapalcePointNumV2(Square square, Map<String, Double> Agcount, Square query) {
+
+        double temp = Agcount.get("agNum");
+        if (!square.isFlag()) {
+            double x3 = square.getX1();
+            double x4 = square.getX2();
+            double y3 = square.getY1();
+            double y4 = square.getY2();
+
+            double x1 = query.getX1();
+            double x2 = query.getX2();
+            double y1 = query.getY1();
+            double y2 = query.getY2();
+
+            double squareArea = (x4 - x3) * (y4 - y3); // 区域面积
+            double rate = 0.0;
+            // 1.全部在区域中
+            long count = (long) square.getCount();
+            double countLa = lapalceNoice(count, 0.1);
+            if (x3 >= x1 && x4 <= x2 && y3 >= y1 && y4 <= y2) {
+                Agcount.put("agNum", Agcount.get("agNum") + countLa);
+            }
+            // 2. 左上角
+            else if (x3 <= x1 && x4 >= x1 && x4 <= x2 && y3 >= y1 && y3 <= y2 && y4 >= y2) {
+                rate = (x4 - x1) * (y2 - y3) / squareArea;
+                Agcount.put("agNum", Agcount.get("agNum") + countLa * rate);
+            }
+            // 3. 左边不包含
+            else if (x3 <= x1 && x4 >= x1 && x4 <= x2 && y3 >= y1 && y4 <= y2) {
+                rate = (x4 - x1) * (y4 - y3) / squareArea;
+                Agcount.put("agNum", Agcount.get("agNum") + countLa * rate);
+            }
+            // 4. 左下角
+            else if (x3 <= x1 && x4 >= x1 && x4 <= x2 && y3 <= y1 && y4 >= y1 && y4 <= y2) {
+                rate = (x4 - x1) * (y4 - y1) / squareArea;
+                Agcount.put("agNum", Agcount.get("agNum") + countLa * rate);
+            }
+            // 5. 下边
+            else if (x3 >= x1 && x4 <= x2 && y3 <= y1 && y4 >= y1 && y4 <= y2) {
+                rate = (x4 - x3) * (y4 - y1) / squareArea;
+                Agcount.put("agNum", Agcount.get("agNum") + countLa * rate);
+            }
+            // 6.右下角
+            else if (x3 >= x1 && x3 <= x2 && x4 >= x2 && y3 <= y1 && y4 >= y1 && y4 <= y2) {
+                rate = (x2 - x3) * (y4 - y1) / squareArea;
+                Agcount.put("agNum", Agcount.get("agNum") + countLa * rate);
+            }
+            // 7.右边
+            else if (x3 >= x1 && x3 <= x2 && x4 >= x2 && y3 >= y1 && y4 <= y2) {
+                rate = (x2 - x3) * (y4 - y3) / squareArea;
+                Agcount.put("agNum", Agcount.get("agNum") + countLa * rate);
+            }
+            // 8. 右上角
+            else if (x3 >= x1 && x3 <= x2 && x4 >= x2 && y3 >= y1 && y3 <= y2 && y4 >= y2) {
+                rate = (x2 - x3) * (y2 - y3) / squareArea;
+                Agcount.put("agNum", Agcount.get("agNum") + countLa * rate);
+            }
+            // 9.上边
+            else if (x3 >= x1 && x4 <= x2 && y3 >= y1 && y3 <= y2 && y4 >= y2) {
+                rate = (x4 - x3) * (y2 - y3) / squareArea;
+                Agcount.put("agNum", Agcount.get("agNum") + countLa * rate);
+            }
+            // 10. 上边包含
+            else if (x3 <= x1 && x4 >= x2 && y3 >= y1 && y3 <= y2 && y4 >= y2) {
+                rate = (x2 - x1) * (y2 - y3) / squareArea;
+                Agcount.put("agNum", Agcount.get("agNum") + countLa * rate);
+            }
+            // 11.下边包含
+            else if (x3 <= x1 && x4 >= x2 && y3 <= y1 && y4 <= y2 && y4 >= y1) {
+                rate = (x2 - x1) * (y4 - y1) / squareArea;
+                Agcount.put("agNum", Agcount.get("agNum") + countLa * rate);
+            }
+            // 12. 左边包含
+            else if (y3 <= y1 && y4 >= y2 && x3 <= x1 && x4 <= x2 && x4 >= x1) {
+                rate = (y2 - y1) * (x2 - x3) / squareArea;
+                Agcount.put("agNum", Agcount.get("agNum") + countLa * rate);
+            }
+            // 13. 右边包含
+            if (y3 <= y1 && y4 >= y2 && x3 >= x1 && x3 <= x2 && x4 >= x2) {
+                rate = (y2 - y1) * (x2 - x3) / squareArea;
+                Agcount.put("agNum", Agcount.get("agNum") + countLa * rate);
+            }
+
+            if (temp != Agcount.get("agNum")) {
+                Agcount.put("squareNum", Agcount.get("squareNum") + 1);
+            }
+
+            logger.info(square.toString() + "===" + Agcount.get("agNum") + "==rate==" + rate + "== count_lap=="
+                    + square.getCountLa() + "==count==" + square.getCount());
+        } else {
+            // if(!square.getSquareList().isEmpty()) {
+            // for(Square item : square.getSquareList()) {
+            // searchLapalcePointNum(item,Agcount,query);
+            // }
+            // }
+            searchLapalcePointNumV2(square.getSquare_D1(), Agcount, Config.querySquare);
+            searchLapalcePointNumV2(square.getSquare_D2(), Agcount, Config.querySquare);
         }
     }
 
@@ -494,9 +601,9 @@ public class CalUtil {
         //
         if (!square.getLineXList().isEmpty() && square.getLineYList().isEmpty()) {
             LineX goldLineX = square.getLineXList().get(0);
-            int xValue = calLineXValue(goldLineX, square, pointList);
+            double xValue = calLineXValue(goldLineX, square, pointList);
             for (int i = 1; i < square.getLineXList().size(); i++) {
-                int temp = calLineXValue(square.getLineXList().get(i), square, pointList);
+                double temp = calLineXValue(square.getLineXList().get(i), square, pointList);
                 if (temp < xValue) {
                     goldLineX = square.getLineXList().get(i);
                     xValue = temp;
@@ -513,9 +620,9 @@ public class CalUtil {
         }
         if (square.getLineXList().isEmpty() && !square.getLineYList().isEmpty()) {
             LineY goldLineY = square.getLineYList().get(0); // y 最佳分割线
-            int yValue = calLineYValue(goldLineY, square, pointList);
+            double yValue = calLineYValue(goldLineY, square, pointList);
             for (int i = 1; i < square.getLineYList().size(); i++) {
-                int temp = calLineYValue(square.getLineYList().get(i), square, pointList);
+                double temp = calLineYValue(square.getLineYList().get(i), square, pointList);
                 if (temp < yValue) {
                     goldLineY = square.getLineYList().get(i);
                     yValue = temp;
@@ -534,18 +641,18 @@ public class CalUtil {
             LineX goldLineX = square.getLineXList().get(0); // x 最佳分割线
             LineY goldLineY = square.getLineYList().get(0); // y 最佳分割线
 
-            int xValue = calLineXValue(goldLineX, square, pointList);
-            int yValue = calLineYValue(goldLineY, square, pointList);
+            double xValue = calLineXValue(goldLineX, square, pointList);
+            double yValue = calLineYValue(goldLineY, square, pointList);
 
             for (int i = 1; i < square.getLineXList().size(); i++) {
-                int temp = calLineXValue(square.getLineXList().get(i), square, pointList);
+                double temp = calLineXValue(square.getLineXList().get(i), square, pointList);
                 if (temp < xValue) {
                     goldLineX = square.getLineXList().get(i);
                     xValue = temp;
                 }
             }
             for (int i = 1; i < square.getLineYList().size(); i++) {
-                int temp = calLineYValue(square.getLineYList().get(i), square, pointList);
+                double temp = calLineYValue(square.getLineYList().get(i), square, pointList);
                 if (temp < yValue) {
                     goldLineY = square.getLineYList().get(i);
                     yValue = temp;
@@ -645,7 +752,7 @@ public class CalUtil {
      * @param square
      * @param pointList
      */
-    public static int calLineXValue(LineX lineX, Square square, List<Point> pointList) {
+    public static double calLineXValue(LineX lineX, Square square, List<Point> pointList) {
 
         int pointD1 = 0; // D1 区域点的个数 v1
         int pointD2 = 0; // D2 区域点的个数 v2
@@ -661,13 +768,18 @@ public class CalUtil {
         }
         pointD2 = square.getCount() - pointD1;
         logger.info(square.toString() + "===" + lineX.toString() + "==pointD2==" + pointD2);
+        List<Square> squareD1List = new ArrayList<>();
+        List<Square> squareD2List = new ArrayList<>();
+
         if (!square.getSquareList().isEmpty()) {
             for (Square item : square.getSquareList()) {
                 if (item.getX2() <= lineX.getX1() && item.getX1() >= square.getX1() && item.getY1() >= square.getY1()
                         && item.getY2() <= square.getY2()) {
                     squareD1 = squareD1 + 1;
+                    squareD1List.add(square);
                 } else {
                     squareD2 = squareD2 + 1;
+                    squareD2List.add(square);
                 }
             }
         }
@@ -675,8 +787,19 @@ public class CalUtil {
         squareD2 = square.getSquareList().size() - squareD1;
 
         // 打分
-        int value = pointD1 * squareD1 + pointD2 * squareD2;
-        return value;
+        double N1 = (double) pointD1;
+        double N2 = (double) pointD2;
+        double I1 = 0.0;
+        double I2 = 0.0;
+        for (Square item : squareD1List) {
+            double temp = (double) item.getCount();
+            I1 = I1 - (temp / N1) * getLogValue(temp / N1);
+        }
+        for (Square item : squareD2List) {
+            double temp = (double) item.getCount();
+            I2 = I2 - (temp / N2) * getLogValue(temp / N2);
+        }
+        return I1 + I2;
     }
 
     /**
@@ -685,13 +808,14 @@ public class CalUtil {
      * @param square
      * @param pointList
      */
-    public static int calLineYValue(LineY lineY, Square square, List<Point> pointList) {
+    public static double calLineYValue(LineY lineY, Square square, List<Point> pointList) {
         int pointD1 = 0; // D1 区域点的个数 v1
         int pointD2 = 0; // D2 区域点的个数 v2
 
         int squareD1 = 0; // D1 区域 划分区域的个数 n1
         int squareD2 = 0; // D2 区域 划分区域的个数 n2
-
+        List<Square> squareD1List = new ArrayList<>();
+        List<Square> squareD2List = new ArrayList<>();
         for (Point point : pointList) {
             if (point.getX() >= square.getX1() && point.getX() <= square.getX2() && point.getY() >= lineY.getY1()
                     && point.getY() <= square.getY2()) {
@@ -705,8 +829,10 @@ public class CalUtil {
                 if (item.getX2() <= square.getX2() && item.getX1() <= square.getX1() && item.getY1() >= lineY.getY1()
                         && item.getY2() <= square.getY2()) {
                     squareD1 = squareD1 + 1;
+                    squareD1List.add(square);
                 } else {
                     squareD2 = squareD2 + 1;
+                    squareD2List.add(square);
                 }
             }
         }
@@ -714,8 +840,19 @@ public class CalUtil {
         squareD2 = square.getSquareList().size() - squareD1;
 
         // 打分
-        int value = pointD1 * squareD1 + pointD2 * squareD2;
-        return value;
+        double N1 = (double) pointD1;
+        double N2 = (double) pointD2;
+        double I1 = 0.0;
+        double I2 = 0.0;
+        for (Square item : squareD1List) {
+            double temp = (double) item.getCount();
+            I1 = I1 - (temp / N1) * getLogValue(temp / N1);
+        }
+        for (Square item : squareD2List) {
+            double temp = (double) item.getCount();
+            I2 = I2 - (temp / N2) * getLogValue(temp / N2);
+        }
+        return I1 + I2;
     }
 
     /**
@@ -742,12 +879,4 @@ public class CalUtil {
         }
     }
 
-    public static void main(String args[]) {
-        int r = calGridNum(10000000, 0.1, 10);
-        // System.out.println(r);
-
-        double d = 9.0 / 2;
-        // System.out.println(d);
-
-    }
 }
