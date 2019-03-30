@@ -7,6 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bjtu.model.Point;
 import com.bjtu.model.Square;
 
 /**
@@ -152,6 +153,21 @@ public final class SquareUtils {
         if (s1y1 == s2y1 && s1y2 == s2y2 && (s1x1 == s2x1 || s1x2 == s2x2))
             return true;
         return false;
+    }
+
+    /**
+     * 生成向量
+     * 
+     * @param countList
+     * @return
+     */
+    public static List<Point> generateVector(List<Double> countList) {
+        List<Point> vectors = new ArrayList<>();
+        for (double count : countList) {
+            Point point = new Point(0d, count);
+            vectors.add(point);
+        }
+        return vectors;
     }
 
 }

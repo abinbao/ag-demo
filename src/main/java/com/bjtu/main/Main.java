@@ -61,7 +61,7 @@ public class Main {
             pointList = StationInfoDao.getPoints();
         logger.info(" === >>> 共读取：{} 个点", pointList.size());
         /*
-         * 函数逻辑处理层：1. 区域划分 2. 区域数据点集合统计 3.
+         * 函数逻辑处理层：1. 区域划分 2. 区域数据点集合统计
          */
         // 2. 划分区域
         Map<String, Square> squareMap = new HashMap<>();
@@ -81,7 +81,7 @@ public class Main {
         }
         // 4. 使用 Cannopy 算法 结合 Kmeans 算法构建簇
         // 4.1 生成点的向量
-        List<Point> vectors = generateVector(countList);
+        List<Point> vectors = SquareUtils.generateVector(countList);
         // 4.2 对点的向量进行聚类
         List<KmeansCluster> clusters = CanopyWithKmeansCluster.runCluster(vectors);
         // 5. 对区域进行打标签，判断集合属于哪个簇
@@ -234,21 +234,6 @@ public class Main {
             return true;
         }
 
-    }
-
-    /**
-     * 生成向量
-     * 
-     * @param countList
-     * @return
-     */
-    public static List<Point> generateVector(List<Double> countList) {
-        List<Point> vectors = new ArrayList<>();
-        for (double count : countList) {
-            Point point = new Point(0d, count);
-            vectors.add(point);
-        }
-        return vectors;
     }
 
     /**
