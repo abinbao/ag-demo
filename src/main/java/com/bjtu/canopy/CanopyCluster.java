@@ -15,8 +15,8 @@ import com.bjtu.model.Point;
  */
 public class CanopyCluster {
 
-    private double T1 = 8d;
-    private double T2 = 4d;
+    private double T1 = 1000d;
+    private double T2 = 50d;
     private List<Point> points; // 测试点集合
     private List<Canopy> canopies; // Canopy 集合
     private AbstractDistanceComputor distanceComputer; // 距离计算公式

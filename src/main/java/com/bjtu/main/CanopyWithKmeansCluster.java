@@ -18,14 +18,14 @@ public class CanopyWithKmeansCluster {
 
     public static void main(String[] args) {
         List<Point> points = new ArrayList<>();
-        points.add(new Point(0.0, 2.1));
-        points.add(new Point(0.0, 1.1));
+        points.add(new Point(0.0, 1000.0));
+        points.add(new Point(0.0, 20.0));
         points.add(new Point(0.0, 9.0));
-        points.add(new Point(0.0, 27.0));
-        points.add(new Point(0.0, 33.0));
-        Point p = new Point(0.0, 2.1);
+        points.add(new Point(0.0, 5000.0));
+        points.add(new Point(0.0, 300.0));
+        Point p = new Point(0.0, 9.0);
         System.out.println(points.contains(p));
-        // runCluster(points);
+        //runCluster(points);
     }
 
     // 开始聚类
@@ -35,7 +35,7 @@ public class CanopyWithKmeansCluster {
         List<Point> kpoints = new ArrayList<>();
         kpoints.addAll(points);
         // 初始化 Canopy 参数
-        CanopyCluster builder = new CanopyCluster(8d, 4d, points);
+        CanopyCluster builder = new CanopyCluster(5d, 1d, points);
         // 开始 Canopy 算法
         builder.runCluster();
         // 获取 Canopy

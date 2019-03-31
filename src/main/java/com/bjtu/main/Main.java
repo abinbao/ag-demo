@@ -41,7 +41,7 @@ public class Main {
 
     private static double len = 320.0;
     private static double height = 160.0;
-    private static double unit = 1;
+    private static double unit = 10;
 
     public static void main(String[] args) {
 
@@ -135,8 +135,7 @@ public class Main {
             double rate = entry.getValue() / mergequareMap.get(key);
             logger.info("=======>>>>>>>合并区域ID:" + key + " , 查询区域占比：" + rate + "<<<<<<=========");
             logger.info("=======>>>>>>>合并区域ID:" + key + " , 点的个数为：" + mergeSquarePointMap.get(key) + "<<<<<<=========");
-            double count = mergeSquarePointMap.get(key) * rate
-                    + CalUtil.lapalceNoice(mergeSquarePointMap.get(key), 0.1);
+            double count = CalUtil.lapalceNoice(mergeSquarePointMap.get(key), 0.1)*rate;
             result = result + count;
         }
         int agActNum = CalUtil.searchActualPointNum(Config.querySquare, pointList);

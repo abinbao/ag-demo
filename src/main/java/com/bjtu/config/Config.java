@@ -1,3 +1,4 @@
+
 package com.bjtu.config;
 
 import java.text.NumberFormat;
@@ -11,18 +12,21 @@ import com.bjtu.model.Square;
  */
 public class Config {
 
-    public static String DATA_PATH = "/Users/apple/project/ag/simple.txt";
+   // public static String DATA_PATH = "/Users/apple/project/ag/simple.txt";
 
-    // public static String DATA_PATH = "D:/python/code/xiaobin/simple.txt";
+    public static String DATA_PATH = "D:/python/code/xiaobin/simple.txt";
 
-    public static int readNum = 1000; // 读取数据
+    public static int readNum = 100000; // 读取数据
 
     public static int startNum = 0; // 开始读的行数
 
     public static int[] map = { 360, 150 };
 
-    public static Square querySquare = new Square(-320.0, 320.0, -160.0, 160.0);
+    public static Square querySquare = new Square(-130.0, -90.0, 20.0, 100.0);
+    //public static Square querySquare = new Square(-123.0, -115.0, 30.0, 38.0);
 
+   // public static Square querySquare = new Square(-40.0, 0.0, 0.0,50.0);
+   // public static Square querySquare = new Square(-320.0, 320.0, -160.0, 160.0);
     public static double e = 1;
 
     /**
