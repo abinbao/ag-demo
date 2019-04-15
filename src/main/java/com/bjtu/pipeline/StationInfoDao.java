@@ -19,7 +19,7 @@ public class StationInfoDao {
     private static final Logger LOG = LoggerFactory.getLogger(StationInfoDao.class);
     private static Properties prop = PropertiesUtil.loadProps("/config.properties");
 
-    private static final String SQL = "select longitude,latitude from gaode_location_info limit 10";
+    private static final String SQL = "select longitude,latitude from gaode_location_info";
 
     protected static Connection getConn() {
         String driver = prop.getProperty("mysql.driver");
@@ -47,7 +47,7 @@ public class StationInfoDao {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 Point point = new Point();
-                point.setX(Double.parseDouble(rs.getString(1)));
+                point.setY(Double.parseDouble(rs.getString(1)));
                 point.setX(Double.parseDouble(rs.getString(2)));
                 points.add(point);
             }
