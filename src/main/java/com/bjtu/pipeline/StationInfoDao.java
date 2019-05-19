@@ -19,7 +19,7 @@ public class StationInfoDao {
     private static final Logger LOG = LoggerFactory.getLogger(StationInfoDao.class);
     private static Properties prop = PropertiesUtil.loadProps("/config.properties");
 
-    private static final String SQL = "select longitude,latitude from gaode_location_info";
+    private static final String SQL = "select longitude,latitude from gaode_location_info limit 10000";
 
     protected static Connection getConn() {
         String driver = prop.getProperty("mysql.driver");

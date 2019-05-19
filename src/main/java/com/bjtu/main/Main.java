@@ -106,7 +106,9 @@ public class Main {
             if (mergeMap.isEmpty()) {
                 logger.info("还没有合并区域,开始构建 ===>>> CanopyId:{}", square.getCanopyId());
                 set.add(square);
+                // 构建合并区域对象
                 buildMergeSquare(square, mergeMap);
+                // 处理
                 handleAdjoinSuqare(square, set, mergeMap, squareMap);
             } else {
                 if (set.contains(square)) {
@@ -150,8 +152,7 @@ public class Main {
             double rate = entry.getValue() / mergequareMap.get(key);
             logger.info("=======>>>>>>>合并区域ID:" + key + " , 查询区域占比：" + rate + "<<<<<<=========");
             logger.info("=======>>>>>>>合并区域ID:" + key + " , 点的个数为：" + mergeSquarePointMap.get(key) + "<<<<<<=========");
-            double count = mergeSquarePointMap.get(key) * rate
-                    + CalUtil.lapalceNoice(mergeSquarePointMap.get(key), 0.1);
+            double count = CalUtil.lapalceNoice(mergeSquarePointMap.get(key), 0.1) * rate;
             result = result + count;
         }
         int agActNum = CalUtil.searchActualPointNum(Config.querySquare, pointList);

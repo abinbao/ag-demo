@@ -61,7 +61,7 @@ public class CanopyCluster {
      */
     public void runCluster() {
         while (!points.isEmpty()) {
-            int length = points.size();
+            int length = points.size(); // 向量长度
             Iterator<Point> iter = points.iterator();
             while (iter.hasNext()) {
                 length--;
